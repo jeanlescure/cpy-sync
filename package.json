@@ -1,9 +1,9 @@
 {
-	"name": "cpy",
+	"name": "cpy-sync",
 	"version": "7.0.1",
-	"description": "Copy files",
+	"description": "Copy files (one after the other)",
 	"license": "MIT",
-	"repository": "sindresorhus/cpy",
+	"repository": "jeanlescure/cpy-sync",
 	"author": {
 		"name": "Sindre Sorhus",
 		"email": "sindresorhus@gmail.com",
@@ -11,9 +11,9 @@
 	},
 	"maintainers": [
 		{
-			"name": "Michael Mayer",
-			"email": "michael@schnittstabil.de",
-			"url": "schnittstabil.de"
+			"name": "Jean M. Lescure",
+			"email": "jean@ticowebmedia.com",
+			"url": "jeanlescure.io"
 		}
 	],
 	"engines": {
