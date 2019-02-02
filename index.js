@@ -61,36 +61,56 @@ module.exports = (src, dest, options = {}) => {
 				});
 			}
 
-			return Promise.all(files.map(srcPath => {
-				const from = preprocessSrcPath(srcPath, options);
-				const to = preprocessDestPath(srcPath, dest, options);
+			return new Promise((resolve, reject) => {
+				const jobs = files.map(srcPath => {
+					const from = preprocessSrcPath(srcPath, options);
+					const to = preprocessDestPath(srcPath, dest, options);
 
-				return cpFile(from, to, options)
-					.on('progress', event => {
-						const fileStatus = copyStatus.get(event.src) || {written: 0, percent: 0};
+					return [from, to, options];
+				});
 
-						if (fileStatus.written !== event.written || fileStatus.percent !== event.percent) {
-							completedSize -= fileStatus.written;
-							completedSize += event.written;
+				const currentJob = null;
+				const promises = [];
 
-							if (event.percent === 1 && fileStatus.percent !== 1) {
-								completedFiles++;
-							}
+				const nextJob = () => {
+					const currentJob = jobs.shift();
+			
+					if (currentJob) {
+						promises.push(
+							cpFile(...currentJob)
+								.on('progress', event => {
+									const fileStatus = copyStatus.get(event.src) || {written: 0, percent: 0};
 
-							copyStatus.set(event.src, {written: event.written, percent: event.percent});
+									if (fileStatus.written !== event.written || fileStatus.percent !== event.percent) {
+										completedSize -= fileStatus.written;
+										completedSize += event.written;
 
-							progressEmitter.emit('progress', {
-								totalFiles: files.length,
-								percent: completedFiles / files.length,
-								completedFiles,
-								completedSize
-							});
-						}
-					})
-					.catch(err => {
-						throw new CpyError(`Cannot copy from \`${from}\` to \`${to}\`: ${err.message}`, err);
-					});
-			}));
+										if (event.percent === 1 && fileStatus.percent !== 1) {
+											completedFiles++;
+										}
+
+										copyStatus.set(event.src, {written: event.written, percent: event.percent});
+
+										progressEmitter.emit('progress', {
+											totalFiles: files.length,
+											percent: completedFiles / files.length,
+											completedFiles,
+											completedSize
+										});
+									}
+								})
+								.then(nextJob)
+								.catch(err => {
+									reject(CpyError(`Cannot copy from \`${from}\` to \`${to}\`: ${err.message}`, err));
+								})
+						);
+					} else {
+						resolve(Promise.all(promises));
+					}
+				};
+
+				nextJob();
+			});
 		});
 
 	promise.on = (...args) => {
