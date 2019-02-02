@@ -1,10 +1,11 @@
-# cpy [![Build Status](https://travis-ci.org/sindresorhus/cpy.svg?branch=master)](https://travis-ci.org/sindresorhus/cpy)
+# cpy-sync [![Build Status](https://travis-ci.org/sindresorhus/cpy.svg?branch=master)](https://travis-ci.org/sindresorhus/cpy)
 
-> Copy files
+> Copy files (one after the other)
 
 
 ## Why
 
+- (This fork) Parallel copying streams run really slow, I needed a version of this module that would work faster by copying one file at a time.
 - Fast by using streams.
 - Resilient by using [graceful-fs](https://github.com/isaacs/node-graceful-fs).
 - User-friendly by accepting [globs](https://github.com/sindresorhus/globby#globbing-patterns) and creating non-existant destination directories.
@@ -15,14 +16,14 @@
 ## Install
 
 ```
-$ npm install cpy
+$ npm install cpy-sync
 ```
 
 
 ## Usage
 
 ```js
-const cpy = require('cpy');
+const cpy = require('cpy-sync');
 
 (async () => {
 	await cpy(['src/*.png', '!src/goat.png'], 'dist');
@@ -114,6 +115,7 @@ Note that the `.on()` method is available only right after the initial `cpy` cal
 
 ## Related
 
+- [cpy](https://github.com/sindresorhus/cpy) - Original of this module
 - [cpy-cli](https://github.com/sindresorhus/cpy-cli) - CLI for this module
 - [cp-file](https://github.com/sindresorhus/cp-file) - Copy a single file
 - [move-file](https://github.com/sindresorhus/move-file) - Move a file
