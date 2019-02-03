@@ -69,11 +69,11 @@ module.exports = (src, dest, options = {}) => {
 					return [from, to, options];
 				});
 
-				const currentJob = null;
+				let currentJob = null;
 				const promises = [];
 
 				const nextJob = () => {
-					const currentJob = jobs.shift();
+					currentJob = jobs.shift();
 			
 					if (currentJob) {
 						promises.push(
