@@ -1,6 +1,6 @@
 {
 	"name": "cpy-sync",
-	"version": "7.0.1",
+	"version": "7.0.2",
 	"description": "Copy files (one after the other)",
 	"license": "MIT",
 	"repository": "jeanlescure/cpy-sync",
